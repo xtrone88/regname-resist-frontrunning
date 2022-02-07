@@ -1,10 +1,9 @@
 require("@nomiclabs/hardhat-waffle")
 require("@nomiclabs/hardhat-etherscan")
 require('@openzeppelin/hardhat-upgrades')
+require('solidity-docgen')
 require("dotenv").config()
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
+
 module.exports = {
   solidity: "0.8.4",
   networks: {
@@ -20,4 +19,7 @@ module.exports = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
   },
+  docgen: {
+    
+  }
 };
