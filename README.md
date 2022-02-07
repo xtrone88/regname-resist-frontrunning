@@ -22,3 +22,6 @@ Rename .env.example to .env and open it, then fill the mainnet/rinkeby url and a
 
 Once deployed, you can see the contract's address on terminal.<br>
 **Save the contract's address and use it.**
+
+### Documentation for developers
+For understanding, you can reference docs/index.md.
