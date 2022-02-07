@@ -122,6 +122,14 @@ contract RegisterName is Ownable {
     }
 
     /**
+     * @dev Increase currentTransaction so taht it makes the next registration available, especially call this when you get errors and reverted.
+    */
+    function allowNextTransaction() public {
+        require(currentTransaction + 1 == transactionOrders[msg.sender], "Invalid ordered transaction");
+        currentTransaction++;
+    }
+
+    /**
      * @dev You can withraw a locked balance of a name
      */
     function withraw(string memory name) public payable {

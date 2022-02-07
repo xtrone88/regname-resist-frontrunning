@@ -27,20 +27,6 @@ describe('RegisterName contract', function () {
         expect(await regContract.connect(tester1).getTransactionId()).to.equal(transactionId)
     })
 
-    it('getTransactionId-2', async () => {
-        transactionId++
-        const tx = await regContract.connect(tester2).newTransactionId()
-        await tx.wait()
-        expect(await regContract.connect(tester2).getTransactionId()).to.equal(transactionId)
-    })
-
-    it('getTransactionId-3', async () => {
-        transactionId++
-        const tx = await regContract.connect(tester3).newTransactionId()
-        await tx.wait()
-        expect(await regContract.connect(tester3).getTransactionId()).to.equal(transactionId)
-    })
-
     it('registerName-1', async () => {
         const name = 'tester1-xyz'
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
@@ -50,6 +36,13 @@ describe('RegisterName contract', function () {
 
         const regState = await regContract.connect(tester1).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('1'))
+    })
+
+    it('getTransactionId-2', async () => {
+        transactionId++
+        const tx = await regContract.connect(tester2).newTransactionId()
+        await tx.wait()
+        expect(await regContract.connect(tester2).getTransactionId()).to.equal(transactionId)
     })
 
     it('registerName-2', async () => {
@@ -62,7 +55,29 @@ describe('RegisterName contract', function () {
         const regState = await regContract.connect(tester2).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('1'))
     })
-    
+
+    it('Fail on registration', async () => {
+        let tx = await regContract.connect(tester3).newTransactionId()
+        await tx.wait()
+
+        const name = 'tester3-xyz'
+        tx = await regContract.connect(tester3).registerName(name)
+        tx.wait()
+    })
+
+    it('allowNextTransaction', async () => {
+        transactionId++
+        await regContract.connect(tester3).allowNextTransaction()
+        expect(await regContract.connect(tester3).getTransactionId()).to.equal(transactionId)
+    })
+        
+    it('getTransactionId-3', async () => {
+        transactionId++
+        const tx = await regContract.connect(tester3).newTransactionId()
+        await tx.wait()
+        expect(await regContract.connect(tester3).getTransactionId()).to.equal(transactionId)
+    })
+
     it('registerName-3', async () => {
         const name = 'tester1-xyz'
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
