@@ -32,7 +32,7 @@ describe('RegisterName contract', function () {
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
         totalFee = totalFee.add(fee)
         const tx = await regContract.connect(tester1).registerName(name, {value: ethers.utils.parseEther('1').add(fee)})
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester1).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('1'))
@@ -50,7 +50,7 @@ describe('RegisterName contract', function () {
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
         totalFee = totalFee.add(fee)
         const tx = await regContract.connect(tester2).registerName(name, {value: ethers.utils.parseEther('1').add(fee)})
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester2).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('1'))
@@ -62,12 +62,13 @@ describe('RegisterName contract', function () {
 
         const name = 'tester3-xyz'
         tx = await regContract.connect(tester3).registerName(name)
-        tx.wait()
+        await tx.wait()
     })
 
     it('allowNextTransaction', async () => {
         transactionId++
-        await regContract.connect(tester3).allowNextTransaction()
+        const tx = await regContract.connect(tester3).allowNextTransaction()
+        await tx.wait()
         expect(await regContract.connect(tester3).getTransactionId()).to.equal(transactionId)
     })
         
@@ -83,7 +84,7 @@ describe('RegisterName contract', function () {
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
         totalFee = totalFee.add(fee)
         const tx = await regContract.connect(tester3).registerName(name, {value: ethers.utils.parseEther('1').add(fee)})
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester3).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('1'))
@@ -101,7 +102,7 @@ describe('RegisterName contract', function () {
         const fee = ethers.utils.parseUnits('1000', 'gwei').mul(BN.from(ethers.utils.toUtf8Bytes(name).length))
         totalFee = totalFee.add(fee)
         const tx = await regContract.connect(tester2).registerName(name, {value: ethers.utils.parseEther('1').add(fee)})
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester2).getRegState(name)
         expect(regState.balance).to.equal(ethers.utils.parseEther('2'))
@@ -112,7 +113,7 @@ describe('RegisterName contract', function () {
 
         const name = 'tester1-xyz'
         const tx = await regContract.connect(tester1).withraw(name)
-        tx.wait()
+        await tx.wait()
 
         // const regState = await regContract.connect(tester1).getRegState(name)
         // expect(regState.balance).to.equal(0)
@@ -123,7 +124,7 @@ describe('RegisterName contract', function () {
     it('withraw-2', async () => {
         const name = 'tester2-xyz'
         const tx = await regContract.connect(tester2).withraw(name)
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester2).getRegState(name)
         expect(regState.balance).to.equal(0)
@@ -132,7 +133,7 @@ describe('RegisterName contract', function () {
     it('withraw-3', async () => {
         const name = 'tester1-xyz'
         const tx = await regContract.connect(tester3).withraw(name)
-        tx.wait()
+        await tx.wait()
 
         const regState = await regContract.connect(tester3).getRegState(name)
         expect(regState.balance).to.equal(0)
@@ -142,7 +143,7 @@ describe('RegisterName contract', function () {
         expect(await regContract.getTotalFeeBalance()).to.equal(totalFee)
 
         const tx = await regContract.withrawFee()
-        tx.wait()
+        await tx.wait()
 
         expect(await regContract.getTotalFeeBalance()).to.equal(0)
     })
